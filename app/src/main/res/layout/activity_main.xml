@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ListView
+        android:id="@+id/mode_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:descendantFocusability="beforeDescendants"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        />
+    <!--android:background="@color/blackish"-->
+
+
+    <TextView
+        android:id="@+id/mode_empty_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:drawableTop="@drawable/no_mode_gray"
+        android:text="@string/no_mode"
+        android:textColor="@color/blackish"
+        android:paddingBottom="88dp" />
+
+    <FrameLayout android:id="@+id/undo_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" >
+        <!--TODO add undo option -->
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/mode_footer_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom" >
+        <ImageButton
+            android:id="@+id/add_mode_btn"
+            android:layout_width="56dip"
+            android:layout_height="56dip"
+            android:layout_marginTop="16dip"
+            android:layout_marginBottom="16dip"
+            android:layout_marginRight="16dip"
+            android:layout_marginEnd="16dip"
+            android:layout_marginLeft="16dip"
+            android:layout_marginStart="16dip"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_add"
+            android:background="@drawable/button_appareance"/>
+    </FrameLayout>
+</FrameLayout>

@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">EasyFocus</string>
+    <string name="action_settings">Settings</string>
+    <string name="no_mode">No Mode</string>
+    <string name="audio">Audio</string>
+    <string name="audio_profile">Audio Profile</string>
+    <string name="connection">Connection</string>
+    <string name="connection_profile">Connection Profile</string>
+    <string name="activation">Activation</string>
+    <string name="activation_profile">Activation Mode</string>
+    <string name="title">Title</string>
+    <string name="enter_title">Enter Title</string>
+    <string name="reset">Reset</string>
+    <string name="submit">Submit</string>
+    <string name="alarm_preview">Please, focus in your Task</string>
+
+    <string-array name="audio_profiles">
+        <item>Default</item>
+        <item>Ring </item>
+        <item>Mute</item>
+        <item>Vibrate</item>
+        <item>Loudest</item>
+    </string-array>
+    
+    <string-array name="connection_profiles">
+        <item>Default</item>
+        <item>WiFi</item>
+        <item>Data</item>
+        <item>No Connection</item>
+    </string-array>
+
+</resources>

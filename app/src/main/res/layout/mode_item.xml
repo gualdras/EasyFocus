@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:id="@+id/alarm_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal|top"
+    android:clickable="true"
+    android:background="@color/light_grey">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"
+            android:layout_gravity="left"
+            android:textColor="#616161" />
+        <Space
+            android:layout_height="match_parent"
+            android:layout_width="0dip"
+            android:layout_weight="1"/>
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/onoff"
+            android:thumbTextPadding="10dp"
+            android:layout_gravity="center_vertical|end"/>
+    </LinearLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <ImageView
+            android:id="@+id/delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:paddingRight="8dp"
+            android:paddingEnd="8dp"
+            android:paddingLeft="8dp"
+            android:paddingStart="8dp"
+            android:src="@android:drawable/ic_menu_delete"
+            android:layout_gravity="top|end" />
+            <!--android:src="@drawable/ic_delete"-->
+
+        <LinearLayout
+            android:id="@+id/expand_area"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginBottom="48dp"
+            android:layout_gravity="bottom" >
+
+            <TextView
+                android:id="@+id/edit_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp"
+                android:paddingRight="12dp"
+                android:paddingEnd="12dp"
+                android:paddingStart="18dp"
+                android:paddingLeft="18dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:ellipsize="end"
+                android:singleLine="true" />
+
+            <GridLayout
+                android:id="@+id/category_table"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:horizontalSpacing="10dp"
+                android:numColumns="3"
+                android:stretchMode="columnWidth"
+                android:verticalSpacing="10dp">
+
+                <!-- Category title -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/activation"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/audio"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/connection"/>
+
+                <!-- Category actual mode -->
+
+                <TextView
+                    android:id="@+id/activation_profile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    />
+                <TextView
+                    android:id="@+id/audio_profile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    />
+                <TextView
+                    android:id="@+id/connection_profile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    />
+
+            </GridLayout>
+        </LinearLayout>
+        <FrameLayout
+            android:id="@+id/collapse_expand"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom" >
+            <ImageView
+                android:id="@+id/arrow"
+                android:layout_width="48dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_expand_down"
+                android:layout_gravity="start|center_vertical" />
+
+            <View
+                android:id="@+id/hairline"
+                android:layout_height="1dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_width="match_parent"
+                android:background="#28ffffff"
+                android:layout_gravity="bottom" />
+            <TextView android:id="@+id/label"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="48dp"
+                android:layout_marginStart="48dp"
+                android:layout_marginRight="104dp"
+                android:layout_marginEnd="104dp"
+                android:gravity="center_vertical"
+                android:ellipsize="end"
+                android:singleLine="true" />
+        </FrameLayout>
+    </FrameLayout>
+</LinearLayout>
