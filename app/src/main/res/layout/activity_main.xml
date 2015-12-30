@@ -17,7 +17,7 @@
     <!--android:background="@color/blackish"-->
 
 
-    <TextView
+  <!--  <TextView
         android:id="@+id/mode_empty_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
         android:drawableTop="@drawable/no_mode_gray"
         android:text="@string/no_mode"
         android:textColor="@color/blackish"
-        android:paddingBottom="88dp" />
+        android:paddingBottom="88dp" />-->
 
     <FrameLayout android:id="@+id/undo_frame"
         android:layout_width="match_parent"

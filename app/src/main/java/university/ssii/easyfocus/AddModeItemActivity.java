@@ -45,6 +45,7 @@ public class AddModeItemActivity extends AppCompatActivity{
                 setDefaultValues();
             }
         });
+
     }
 
     private void addMode(){
