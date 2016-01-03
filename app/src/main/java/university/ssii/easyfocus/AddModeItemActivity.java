@@ -61,7 +61,7 @@ public class AddModeItemActivity extends AppCompatActivity{
         mTitle = mTitleText.getText().toString();
         mConnection = mConnectionSpinner.getSelectedItem().toString();
         mAudio = mAudioSpinner.getSelectedItem().toString();
-        int activationMode = 0;
+        int activationMode = Constants.DEFAULT_ID;
 
         int selectedID = mRadioGroup.getCheckedRadioButtonId();
 

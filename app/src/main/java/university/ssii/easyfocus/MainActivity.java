@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     static ModeListAdapter mAdapter;
     ImageButton mAddButton;
     static ListView listView;
+    static boolean isRunning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
 
         saveItems();
+        isRunning = false;
     }
 
     @Override
@@ -66,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         if (mAdapter.getCount() == 0){
             loadItems();
         }
+        isRunning = true;
     }
 
     public void startAddMode(){

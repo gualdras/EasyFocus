@@ -1,5 +1,6 @@
 package university.ssii.easyfocus;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -20,6 +21,11 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -54,6 +60,19 @@ public class ModeListAdapter extends BaseAdapter {
         // Create an PendingIntent that holds the NotificationReceiverIntent
         mNotificationReceiverPendingIntent = PendingIntent.getBroadcast(
                 mContext, 0, mNotificationReceiverIntent, 0);
+    }
+
+
+    public void update(ListView list){
+        int start = list.getFirstVisiblePosition();
+
+        for(ModeItem item: mItems){
+            for(int i=start, j=list.getLastVisiblePosition();i<=j;i++)
+                if(item==list.getItemAtPosition(i)){
+                    View view = list.getChildAt(i-start);
+                    list.getAdapter().getView(i, view, list);
+                }
+        }
     }
 
     public void add(ModeItem item) {
@@ -246,8 +265,6 @@ public class ModeListAdapter extends BaseAdapter {
                     if(curr.isActive() != isChecked){
                         changeSwitchState(isChecked, curr);
                         curr.setFirstTime(false);
-                    }
-                    if(curr.isActive() != isChecked) {
                         curr.setActive(isChecked);
                     }
                 }
@@ -283,8 +300,34 @@ public class ModeListAdapter extends BaseAdapter {
         holder.connection.setText(curr.getConnection());
 
 
+        if(!MainActivity.isRunning){
+            saveItems();
+        }
         return newView;
+
     }
+
+    private void saveItems() {
+        PrintWriter writer = null;
+        try {
+            FileOutputStream fos = mContext.openFileOutput(Constants.FILE_NAME, mContext.MODE_PRIVATE);
+            writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+                    fos)));
+
+            for (int idx = 0; idx < getCount(); idx++) {
+
+                writer.println(getItem(idx));
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (null != writer) {
+                writer.close();
+            }
+        }
+    }
+
 
     static class ViewHolder {
 

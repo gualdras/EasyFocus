@@ -51,10 +51,7 @@ public class CheckPattern extends Service implements SensorEventListener {
 
         sensorManager.registerListener(CheckPattern.this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
 
-        for (int i = 0; i < Constants.NPATTERNS; i++){
-            dynamicTimeWarpers.add(null);
-            activePatterns.add(null);
-        }
+        initializeList();
         getAvailablesPatterns();
         for(int i = 0; i < Constants.NPATTERNS; i++){
             if(activePatterns.get(i) != null){
@@ -65,6 +62,13 @@ public class CheckPattern extends Service implements SensorEventListener {
             stopSelf();
         }
         System.out.println("Entrandoloooooo");
+    }
+
+    public static void initializeList(){
+        for (int i = 0; i < Constants.NPATTERNS; i++){
+            dynamicTimeWarpers.add(null);
+            activePatterns.add(null);
+        }
     }
 
     @Override
@@ -97,7 +101,7 @@ public class CheckPattern extends Service implements SensorEventListener {
         }else if((dtw = dynamicTimeWarpers.get(Constants.SHAKEPATTERN_ID)) != null && dtw.iterateMovement(values, 3f)){
             Toast.makeText(getApplicationContext(), "SHAKE", Toast.LENGTH_SHORT).show();
             MainActivity.changeSwitchState(Constants.SHAKEPATTERN_ID);
-        }else if((dtw = dynamicTimeWarpers.get(Constants.UPDOWNPATTERN_ID)) != null && dtw.iterateMovement(values, 3f)) {
+        }else if((dtw = dynamicTimeWarpers.get(Constants.UPDOWNPATTERN_ID)) != null && dtw.iterateMovement(values, 2.6f)) {
             Toast.makeText(getApplicationContext(), "UPDOWN", Toast.LENGTH_SHORT).show();
             MainActivity.changeSwitchState(Constants.UPDOWNPATTERN_ID);
         }
@@ -178,6 +182,8 @@ public class CheckPattern extends Service implements SensorEventListener {
                 reader.readLine();
                 reader.readLine();
                 activation = Integer.valueOf(reader.readLine());
+                Boolean.valueOf(reader.readLine());
+                Boolean.valueOf(reader.readLine());
                 addAvailablePattern(activation);
             }
         } catch (FileNotFoundException e) {
