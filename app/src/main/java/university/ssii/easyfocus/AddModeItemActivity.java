@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 
 /**
@@ -19,6 +21,8 @@ public class AddModeItemActivity extends AppCompatActivity{
     private EditText mTitleText;
     private Spinner mConnectionSpinner, mAudioSpinner;
     private Button mSubmitButton, mResetButton;
+    private RadioGroup mRadioGroup;
+    private RadioButton mShakeRB, mUpDownRB, mLeftRB, mRigthRB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,14 +50,33 @@ public class AddModeItemActivity extends AppCompatActivity{
             }
         });
 
+        mRadioGroup = (RadioGroup) findViewById(R.id.activation_radiogroup);
+        mShakeRB = (RadioButton) findViewById(R.id.shakeRB);
+        mUpDownRB = (RadioButton) findViewById(R.id.upDownRB);
+        mRigthRB = (RadioButton) findViewById(R.id.rightRB);
+        mLeftRB = (RadioButton) findViewById(R.id.leftRB);
     }
 
     private void addMode(){
         mTitle = mTitleText.getText().toString();
         mConnection = mConnectionSpinner.getSelectedItem().toString();
         mAudio = mAudioSpinner.getSelectedItem().toString();
+        int activationMode = 0;
 
-        ModeItem modeItem = new ModeItem(mTitle, mConnection, mAudio);
+        int selectedID = mRadioGroup.getCheckedRadioButtonId();
+
+        if(selectedID == mShakeRB.getId()) {
+            activationMode = Constants.SHAKEPATTERN_ID;
+        }else if(selectedID == mUpDownRB.getId()){
+            activationMode = Constants.UPDOWNPATTERN_ID;
+        }else if(selectedID == mLeftRB.getId()){
+            activationMode = Constants.LEFTPATTERN_ID;
+        }else if(selectedID == mRigthRB.getId()){
+            activationMode = Constants.RIGHTPATTERN_ID;
+        }
+
+
+        ModeItem modeItem = new ModeItem(mTitle, mConnection, mAudio, activationMode);
         Intent data = new Intent();
         modeItem.packageIntent(data);
 
@@ -61,6 +84,7 @@ public class AddModeItemActivity extends AppCompatActivity{
         finish();
     }
 
+    //TODO
     private void setDefaultValues(){
 
     }

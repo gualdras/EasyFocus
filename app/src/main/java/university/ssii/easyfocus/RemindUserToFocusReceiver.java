@@ -15,9 +15,9 @@ public class RemindUserToFocusReceiver extends BroadcastReceiver {
     private static final int MY_NOTIFICATION_ID = 1;
 
     // Notification Text Elements
-    private final CharSequence tickerText = "Are You Playing Angry Birds Again!";
+    private final CharSequence tickerText = "You are wasting your time";
     private final CharSequence contentTitle = "A Kind Reminder";
-    private final CharSequence contentText = "Get back to studying!!";
+    private final CharSequence contentText = "Get back to your tasks";
 
     // Notification Action Elements
     private Intent mNotificationIntent;

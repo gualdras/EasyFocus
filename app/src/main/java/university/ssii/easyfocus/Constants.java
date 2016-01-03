@@ -1,0 +1,17 @@
+package university.ssii.easyfocus;
+
+/**
+ * Created by gualdras on 30/12/15.
+ */
+public class Constants {
+
+
+    public final static int SHAKEPATTERN_ID = 0;
+    public final static int LEFTPATTERN_ID = 1;
+    public final static int RIGHTPATTERN_ID = 2;
+    public final static int UPDOWNPATTERN_ID = 3;
+
+    public final static int NPATTERNS = 4;
+
+    public static final String FILE_NAME = "ModeItemData.txt";
+}

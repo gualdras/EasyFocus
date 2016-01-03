@@ -88,17 +88,17 @@
                     android:layout_width="0dip"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:src="@drawable/shake_icon"/>
+                    android:src="@drawable/updown_icon"/>
                 <ImageView
                     android:layout_width="0dip"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:src="@drawable/shake_icon"/>
+                    android:src="@drawable/rotate_left_icon"/>
                 <ImageView
                     android:layout_width="0dip"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:src="@drawable/shake_icon"/>
+                    android:src="@drawable/rotate_right_icon"/>
 
 
             </LinearLayout>
@@ -115,22 +115,26 @@
                     android:layout_height="match_parent" />
 
                 <RadioButton
+                    android:id="@+id/shakeRB"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Shake"/>
                 <RadioButton
+                    android:id="@+id/upDownRB"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Up-Down"/>
 
                 <RadioButton
+                    android:id="@+id/leftRB"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Left"/>
                 <RadioButton
+                    android:id="@+id/rightRB"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

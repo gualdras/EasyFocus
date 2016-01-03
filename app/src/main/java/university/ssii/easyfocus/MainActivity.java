@@ -22,11 +22,10 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity {
 
 
-    private static final String FILE_NAME = "ModeItemData.txt";
-
     private static final int ADD_MODE_ITEM_REQUEST = 0;
-    ModeListAdapter mAdapter;
+    static ModeListAdapter mAdapter;
     ImageButton mAddButton;
+    static ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         mAdapter = new ModeListAdapter(getApplicationContext());
         setContentView(R.layout.activity_main);
 
-        ListView listView = (ListView) findViewById(R.id.mode_list);
+        listView = (ListView) findViewById(R.id.mode_list);
 
         listView.setAdapter(mAdapter);
 
@@ -47,9 +46,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        startService(new Intent(MainActivity.this, CheckPattern.class));
-
-
+        if(!CheckPattern.isActive){
+            CheckPattern.isActive = true;
+            Intent intent = new Intent(MainActivity.this, CheckPattern.class);
+            startService(intent);
+        }
     }
 
     @Override
@@ -80,10 +81,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public static void changeSwitchState(int activationMode){
+        mAdapter.changeSwitchState(activationMode, listView);
+    }
+
     private void saveItems() {
         PrintWriter writer = null;
         try {
-            FileOutputStream fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
+            FileOutputStream fos = openFileOutput(Constants.FILE_NAME, MODE_PRIVATE);
             writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
                     fos)));
 
@@ -104,19 +109,25 @@ public class MainActivity extends AppCompatActivity {
     private void loadItems() {
         BufferedReader reader = null;
         try {
-            FileInputStream fis = openFileInput(FILE_NAME);
+            FileInputStream fis = openFileInput(Constants.FILE_NAME);
             reader = new BufferedReader(new InputStreamReader(fis));
 
             String title = null;
             String audio = null;
             String connection = null;
+            int activation = 0;
+            boolean active = false;
+            boolean firstTime = false;
+
 
             while (null != (title = reader.readLine())) {
                 audio = reader.readLine();
                 connection = reader.readLine();
-                mAdapter.add(new ModeItem(title, connection, audio));
+                activation = Integer.valueOf(reader.readLine());
+                active = Boolean.valueOf(reader.readLine());
+                firstTime = Boolean.valueOf(reader.readLine());
+                mAdapter.add(new ModeItem(title, connection, audio, activation, active, firstTime));
             }
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

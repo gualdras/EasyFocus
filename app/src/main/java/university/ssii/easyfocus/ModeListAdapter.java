@@ -15,8 +15,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -56,13 +58,156 @@ public class ModeListAdapter extends BaseAdapter {
 
     public void add(ModeItem item) {
         mItems.add(item);
+        CheckPattern.addAvailablePattern(item.getmActivationMode());
         notifyDataSetChanged();
     }
 
     public void remove(int pos) {
+        CheckPattern.removeAvailablePatterns(mItems.get(pos).getmActivationMode());
         mItems.remove(pos);
+        mAlarmManager.cancel(mNotificationReceiverPendingIntent);
         notifyDataSetChanged();
     }
+
+    public void changeSwitchState(int activationMode, ListView list){
+        for(ModeItem item: mItems){
+            if(item.getmActivationMode() == activationMode){
+                item.setActive(!item.isActive());
+                changeSwitchState(item.isActive(), item);
+                item.setFirstTime(false);
+
+                int start = list.getFirstVisiblePosition();
+                for(int i=start, j=list.getLastVisiblePosition();i<=j;i++)
+                    if(item==list.getItemAtPosition(i)){
+                        View view = list.getChildAt(i-start);
+                        list.getAdapter().getView(i, view, list);
+                        break;
+                    }
+
+            }
+        }
+    }
+
+    private void changeSwitchState(boolean isChecked, ModeItem curr){
+        if (isChecked) {
+            WifiManager wifi;
+            final Class conmanClass;
+            final ConnectivityManager conman = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+            AudioManager mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+
+            switch (curr.getConnection()) {
+
+                case ModeItem.WIFI:
+
+                    //turn off aeroplane mode
+                                /*if(Settings.System.putInt(mContext.getContentResolver(),Settings.System.AIRPLANE_MODE_ON,1)){
+                                    Intent intent = new Intent(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+                                    intent.putExtra("state", false);
+                                    mContext.sendBroadcast(intent);
+                                }*/
+
+                    //Enable wifi
+                    wifi = (WifiManager) mContext.getSystemService(mContext.WIFI_SERVICE);
+                    wifi.setWifiEnabled(true);
+
+                    //Disable data
+                    try {
+                        conmanClass = Class.forName(conman.getClass().getName());
+                        final Field iConnectivityManagerField = conmanClass.getDeclaredField("mService");
+                        iConnectivityManagerField.setAccessible(true);
+                        final Object iConnectivityManager = iConnectivityManagerField.get(conman);
+                        final Class iConnectivityManagerClass = Class.forName(iConnectivityManager.getClass().getName());
+                        final Method setMobileDataEnabledMethod = iConnectivityManagerClass.getDeclaredMethod("setMobileDataEnabled", Boolean.TYPE);
+                        setMobileDataEnabledMethod.setAccessible(true);
+
+                        setMobileDataEnabledMethod.invoke(iConnectivityManager, false);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case ModeItem.DATA:
+
+                    //turn off aeroplane mode
+                                /*if(Settings.System.putInt(mContext.getContentResolver(),Settings.System.AIRPLANE_MODE_ON,1)){
+                                    Intent intent = new Intent(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+                                    intent.putExtra("state", false);
+                                    mContext.sendBroadcast(intent);
+                                }*/
+                    //Enable data
+                    try {
+                        conmanClass = Class.forName(conman.getClass().getName());
+                        final Field iConnectivityManagerField = conmanClass.getDeclaredField("mService");
+                        iConnectivityManagerField.setAccessible(true);
+                        final Object iConnectivityManager = iConnectivityManagerField.get(conman);
+                        final Class iConnectivityManagerClass = Class.forName(iConnectivityManager.getClass().getName());
+                        final Method setMobileDataEnabledMethod = iConnectivityManagerClass.getDeclaredMethod("setMobileDataEnabled", Boolean.TYPE);
+                        setMobileDataEnabledMethod.setAccessible(true);
+
+                        setMobileDataEnabledMethod.invoke(iConnectivityManager, false);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    //Turn off Wifi
+                    wifi = (WifiManager) mContext.getSystemService(mContext.WIFI_SERVICE);
+                    wifi.setWifiEnabled(false);
+
+                    break;
+                case ModeItem.NO_CONNECION:
+                    try {
+                        conmanClass = Class.forName(conman.getClass().getName());
+                        final Field iConnectivityManagerField = conmanClass.getDeclaredField("mService");
+                        iConnectivityManagerField.setAccessible(true);
+                        final Object iConnectivityManager = iConnectivityManagerField.get(conman);
+                        final Class iConnectivityManagerClass = Class.forName(iConnectivityManager.getClass().getName());
+                        final Method setMobileDataEnabledMethod = iConnectivityManagerClass.getDeclaredMethod("setMobileDataEnabled", Boolean.TYPE);
+                        setMobileDataEnabledMethod.setAccessible(true);
+
+                        setMobileDataEnabledMethod.invoke(iConnectivityManager, false);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    //Turn off Wifi
+                    wifi = (WifiManager) mContext.getSystemService(mContext.WIFI_SERVICE);
+                    wifi.setWifiEnabled(false);
+
+                    break;
+
+            }
+
+            mAlarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME,
+                    SystemClock.elapsedRealtime() + INITIAL_ALARM_DELAY,
+                    DELAY_BETWEEN_ALARM,
+                    mNotificationReceiverPendingIntent);
+
+            switch (curr.getAudio()) {
+
+                case ModeItem.MUTE:
+                    mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                    break;
+
+                case ModeItem.VIBRATE:
+                    mAudioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+                    break;
+
+                case ModeItem.RING:
+                    mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                    break;
+
+                case ModeItem.LOUDEST:
+                    mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                    for(int i=0; i<20; i++){
+                        mAudioManager.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_ALLOW_RINGER_MODES);
+                    }
+                    break;
+            }
+
+        } else {
+            mAlarmManager.cancel(mNotificationReceiverPendingIntent);
+        }
+    }
+
 
     @Override
     public int getCount() {
@@ -98,123 +243,12 @@ public class ModeListAdapter extends BaseAdapter {
             holder.onoff.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                    if (isChecked) {
-                        WifiManager wifi;
-                        final Class conmanClass;
-                        final ConnectivityManager conman = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-                        AudioManager mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
-
-                        switch (curr.getConnection()) {
-
-                            case ModeItem.WIFI:
-
-                                //turn off aeroplane mode
-                                /*if(Settings.System.putInt(mContext.getContentResolver(),Settings.System.AIRPLANE_MODE_ON,1)){
-                                    Intent intent = new Intent(Intent.ACTION_AIRPLANE_MODE_CHANGED);
-                                    intent.putExtra("state", false);
-                                    mContext.sendBroadcast(intent);
-                                }*/
-
-                                //Enable wifi
-                                wifi = (WifiManager) mContext.getSystemService(mContext.WIFI_SERVICE);
-                                wifi.setWifiEnabled(true);
-
-                                //Disable data
-                                try {
-                                    conmanClass = Class.forName(conman.getClass().getName());
-                                    final Field iConnectivityManagerField = conmanClass.getDeclaredField("mService");
-                                    iConnectivityManagerField.setAccessible(true);
-                                    final Object iConnectivityManager = iConnectivityManagerField.get(conman);
-                                    final Class iConnectivityManagerClass = Class.forName(iConnectivityManager.getClass().getName());
-                                    final Method setMobileDataEnabledMethod = iConnectivityManagerClass.getDeclaredMethod("setMobileDataEnabled", Boolean.TYPE);
-                                    setMobileDataEnabledMethod.setAccessible(true);
-
-                                    setMobileDataEnabledMethod.invoke(iConnectivityManager, false);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                break;
-                            case ModeItem.DATA:
-
-                                //turn off aeroplane mode
-                                /*if(Settings.System.putInt(mContext.getContentResolver(),Settings.System.AIRPLANE_MODE_ON,1)){
-                                    Intent intent = new Intent(Intent.ACTION_AIRPLANE_MODE_CHANGED);
-                                    intent.putExtra("state", false);
-                                    mContext.sendBroadcast(intent);
-                                }*/
-                                //Enable data
-                                try {
-                                    conmanClass = Class.forName(conman.getClass().getName());
-                                    final Field iConnectivityManagerField = conmanClass.getDeclaredField("mService");
-                                    iConnectivityManagerField.setAccessible(true);
-                                    final Object iConnectivityManager = iConnectivityManagerField.get(conman);
-                                    final Class iConnectivityManagerClass = Class.forName(iConnectivityManager.getClass().getName());
-                                    final Method setMobileDataEnabledMethod = iConnectivityManagerClass.getDeclaredMethod("setMobileDataEnabled", Boolean.TYPE);
-                                    setMobileDataEnabledMethod.setAccessible(true);
-
-                                    setMobileDataEnabledMethod.invoke(iConnectivityManager, false);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-
-                                //Turn off Wifi
-                                wifi = (WifiManager) mContext.getSystemService(mContext.WIFI_SERVICE);
-                                wifi.setWifiEnabled(false);
-
-                                break;
-                            case ModeItem.NO_CONNECION:
-                                try {
-                                    conmanClass = Class.forName(conman.getClass().getName());
-                                    final Field iConnectivityManagerField = conmanClass.getDeclaredField("mService");
-                                    iConnectivityManagerField.setAccessible(true);
-                                    final Object iConnectivityManager = iConnectivityManagerField.get(conman);
-                                    final Class iConnectivityManagerClass = Class.forName(iConnectivityManager.getClass().getName());
-                                    final Method setMobileDataEnabledMethod = iConnectivityManagerClass.getDeclaredMethod("setMobileDataEnabled", Boolean.TYPE);
-                                    setMobileDataEnabledMethod.setAccessible(true);
-
-                                    setMobileDataEnabledMethod.invoke(iConnectivityManager, false);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                //Turn off Wifi
-                                wifi = (WifiManager) mContext.getSystemService(mContext.WIFI_SERVICE);
-                                wifi.setWifiEnabled(false);
-
-                                break;
-
-                        }
-
-                        mAlarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME,
-                                SystemClock.elapsedRealtime() + INITIAL_ALARM_DELAY,
-                                DELAY_BETWEEN_ALARM,
-                                mNotificationReceiverPendingIntent);
-
-                        switch (curr.getAudio()) {
-
-                            case ModeItem.MUTE:
-                                mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-                                break;
-
-                            case ModeItem.VIBRATE:
-                                mAudioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
-                                break;
-
-                            case ModeItem.RING:
-                                mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-                                break;
-
-                            case ModeItem.LOUDEST:
-                                mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-                                for(int i=0; i<20; i++){
-                                    mAudioManager.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_ALLOW_RINGER_MODES);
-                                }
-                                break;
-                        }
-
-                    } else {
-                        mAlarmManager.cancel(mNotificationReceiverPendingIntent);
+                    if(curr.isActive() != isChecked){
+                        changeSwitchState(isChecked, curr);
+                        curr.setFirstTime(false);
+                    }
+                    if(curr.isActive() != isChecked) {
+                        curr.setActive(isChecked);
                     }
                 }
             });
@@ -226,15 +260,28 @@ public class ModeListAdapter extends BaseAdapter {
                 }
             });
 
+
+            /*if (curr.isFirstTime() && curr.isActive()) {
+                changeSwitchState(curr.isActive(), curr);
+                curr.setFirstTime(false);
+            }*/
+
+
+
             newView.setTag(holder);
 
         } else {
             holder = (ViewHolder) newView.getTag();
         }
 
+        if(curr.isActive() != holder.onoff.isChecked()){
+            holder.onoff.setChecked(curr.isActive());
+        }
+
         holder.title.setText(curr.getTitle());
         holder.audio.setText(curr.getAudio());
         holder.connection.setText(curr.getConnection());
+
 
         return newView;
     }
