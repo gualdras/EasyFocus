@@ -20,6 +20,8 @@ public class DynamicTimeWarper {
     int K;
     int[][] warpingPath;
     float warpingDistance;
+    long initTime, lastTime;
+    boolean timerLock;
 
 
     public DynamicTimeWarper(ArrayList<ArrayList<Float>> matrix1){
@@ -28,39 +30,50 @@ public class DynamicTimeWarper {
         matrix1Distance = matrix1.size();
         matrix2Distance = matrix2.size();
         K = 1;
-
+        initTime = System.currentTimeMillis();
+        lastTime = initTime;
+        timerLock = false;
 
 
     }
 
     //Itera en 1 nuevo delta
-    public boolean iterateMovement(ArrayList<Float> newValues, float umbral){
-        if(lastValues == null){
-            lastValues = newValues;
-            return false;
-        }else {
-
-            ArrayList<Float> deltaValues = substractArrayList(newValues, lastValues);
-            lastValues = newValues;
-
-
-
-            //System.out.prinln("X:" + newValues.get(0) + "X:" + newValues.get(0) +"X:" + newValues.get(0));
-            matrix2.add(newValues);
-            matrix2Distance = matrix2.size();
-            if (restartSequence(deltaValues)) {
-                this.matrix2.clear();
-                System.out.println("Cleared");
+    public boolean iterateMovement(ArrayList<Float> newValues, float umbral) {
+        if (lastTime - initTime > 500) {
+            if (lastValues == null) {
+                lastValues = newValues;
                 return false;
             } else {
-                double value = resolve();
-                System.out.println("Is :" + value + "<" + umbral);
-                boolean recognized = value < umbral;
-                if(recognized) {
+
+                ArrayList<Float> deltaValues = newValues;
+                ArrayList<Float> realdDeltaValues = substractArrayList(newValues,lastValues);
+                lastValues = newValues;
+
+
+         //       System.out.println("X:" + deltaValues.get(0) + " Y:" + deltaValues.get(1) + " Z:" + deltaValues.get(2));
+           //     System.out.println( deltaValues.get(0) + ", " + deltaValues.get(1) + ", " + deltaValues.get(2) +", ");
+
+                matrix2.add(newValues);
+                matrix2Distance = matrix2.size();
+                if (restartSequence(realdDeltaValues)) {
                     this.matrix2.clear();
+                    //System.out.println("Cleared");
+                    return false;
+                } else {
+                    double value = resolve();
+                      System.out.println("Is :" + value + "<" + umbral);
+                    boolean recognized = value < umbral;
+                    if (recognized) {
+                        this.matrix2.clear();
+                        System.out.println("RECOGNIZED PATRON");
+                        initTime = System.currentTimeMillis();
+                    }
+                    return recognized;
                 }
-                return recognized;
             }
+        } else {
+            lastTime = System.currentTimeMillis();
+            return false;
         }
     }
 
@@ -90,7 +103,7 @@ public class DynamicTimeWarper {
 
         total += addValues(smite);
 
-        System.out.println("Valor delta total: "+ total);
+       // System.out.println("Valor delta total: "+ total);
         return total < MAX_PER_SAMPLE;
     }
 
@@ -107,6 +120,8 @@ public class DynamicTimeWarper {
         warpingDistance = 0.0f;
         K=1;
         float accumulatedDistance = 0.0f;
+
+       // System.out.println(matrix1.toString());
 
         float[][] localDistance = new float[matrix1Distance][matrix2Distance];        // local distances
         float[][] globalDistance = new float[matrix1Distance][matrix2Distance];        // global distances

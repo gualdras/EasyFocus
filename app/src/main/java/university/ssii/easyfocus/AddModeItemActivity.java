@@ -51,7 +51,7 @@ public class AddModeItemActivity extends AppCompatActivity{
         });
 
         mRadioGroup = (RadioGroup) findViewById(R.id.activation_radiogroup);
-        mShakeRB = (RadioButton) findViewById(R.id.shakeRB);
+        //mShakeRB = (RadioButton) findViewById(R.id.shakeRB);
         mUpDownRB = (RadioButton) findViewById(R.id.upDownRB);
         mRigthRB = (RadioButton) findViewById(R.id.rightRB);
         mLeftRB = (RadioButton) findViewById(R.id.leftRB);
@@ -65,9 +65,7 @@ public class AddModeItemActivity extends AppCompatActivity{
 
         int selectedID = mRadioGroup.getCheckedRadioButtonId();
 
-        if(selectedID == mShakeRB.getId()) {
-            activationMode = Constants.SHAKEPATTERN_ID;
-        }else if(selectedID == mUpDownRB.getId()){
+        if(selectedID == mUpDownRB.getId()){
             activationMode = Constants.UPDOWNPATTERN_ID;
         }else if(selectedID == mLeftRB.getId()){
             activationMode = Constants.LEFTPATTERN_ID;

@@ -48,7 +48,6 @@ public class ModeListAdapter extends BaseAdapter {
     public ModeListAdapter(Context mContext) {
         this.mContext = mContext;
         this.mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        System.out.println("asd \n fas \n dfa \n sdga \n sdgas \n dgs\ndagas \n dg");
 
         // Get the AlarmManager Service
         mAlarmManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
