@@ -26,24 +26,19 @@ public class RemindUserToFocusReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        // The Intent to be used when the user clicks on the Notification View
         mNotificationIntent = new Intent(context, MainActivity.class);
 
-        // The PendingIntent that wraps the underlying Intent
         mContentIntent = PendingIntent.getActivity(context, 0,
                 mNotificationIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        // Build the Notification
         Notification.Builder notificationBuilder = new Notification.Builder(
                 context).setTicker(tickerText)
                 .setSmallIcon(android.R.drawable.stat_sys_warning)
                 .setAutoCancel(true).setContentTitle(contentTitle)
                 .setContentText(contentText).setContentIntent(mContentIntent);
-        // Get the NotificationManager
         NotificationManager mNotificationManager = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // Pass the Notification to the NotificationManager:
         mNotificationManager.notify(MY_NOTIFICATION_ID,
                 notificationBuilder.build());
 

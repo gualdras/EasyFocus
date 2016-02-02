@@ -22,7 +22,7 @@ public class AddModeItemActivity extends AppCompatActivity{
     private Spinner mConnectionSpinner, mAudioSpinner;
     private Button mSubmitButton, mResetButton;
     private RadioGroup mRadioGroup;
-    private RadioButton mShakeRB, mUpDownRB, mLeftRB, mRigthRB;
+    private RadioButton mUpDownRB, mLeftRB, mRigthRB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +51,6 @@ public class AddModeItemActivity extends AppCompatActivity{
         });
 
         mRadioGroup = (RadioGroup) findViewById(R.id.activation_radiogroup);
-        //mShakeRB = (RadioButton) findViewById(R.id.shakeRB);
         mUpDownRB = (RadioButton) findViewById(R.id.upDownRB);
         mRigthRB = (RadioButton) findViewById(R.id.rightRB);
         mLeftRB = (RadioButton) findViewById(R.id.leftRB);

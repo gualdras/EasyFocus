@@ -6,10 +6,9 @@ package university.ssii.easyfocus;
 public class Constants {
 
 
-    public final static int SHAKEPATTERN_ID = 0;
-    public final static int LEFTPATTERN_ID = 1;
-    public final static int RIGHTPATTERN_ID = 2;
-    public final static int UPDOWNPATTERN_ID = 3;
+    public final static int LEFTPATTERN_ID = 0;
+    public final static int RIGHTPATTERN_ID = 1;
+    public final static int UPDOWNPATTERN_ID = 2;
     public final static int DEFAULT_ID = 22;
 
     public final static int NPATTERNS = 4;

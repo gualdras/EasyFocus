@@ -114,17 +114,14 @@ public class ModeListAdapter extends BaseAdapter {
 
             AudioManager mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
 
+            mAlarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME,
+                    SystemClock.elapsedRealtime() + INITIAL_ALARM_DELAY,
+                    DELAY_BETWEEN_ALARM,
+                    mNotificationReceiverPendingIntent);
+
             switch (curr.getConnection()) {
 
                 case ModeItem.WIFI:
-
-                    //turn off aeroplane mode
-                                /*if(Settings.System.putInt(mContext.getContentResolver(),Settings.System.AIRPLANE_MODE_ON,1)){
-                                    Intent intent = new Intent(Intent.ACTION_AIRPLANE_MODE_CHANGED);
-                                    intent.putExtra("state", false);
-                                    mContext.sendBroadcast(intent);
-                                }*/
-
                     //Enable wifi
                     wifi = (WifiManager) mContext.getSystemService(mContext.WIFI_SERVICE);
                     wifi.setWifiEnabled(true);
@@ -145,13 +142,6 @@ public class ModeListAdapter extends BaseAdapter {
                     }
                     break;
                 case ModeItem.DATA:
-
-                    //turn off aeroplane mode
-                                /*if(Settings.System.putInt(mContext.getContentResolver(),Settings.System.AIRPLANE_MODE_ON,1)){
-                                    Intent intent = new Intent(Intent.ACTION_AIRPLANE_MODE_CHANGED);
-                                    intent.putExtra("state", false);
-                                    mContext.sendBroadcast(intent);
-                                }*/
                     //Enable data
                     try {
                         conmanClass = Class.forName(conman.getClass().getName());
@@ -193,11 +183,6 @@ public class ModeListAdapter extends BaseAdapter {
                     break;
 
             }
-
-            mAlarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME,
-                    SystemClock.elapsedRealtime() + INITIAL_ALARM_DELAY,
-                    DELAY_BETWEEN_ALARM,
-                    mNotificationReceiverPendingIntent);
 
             switch (curr.getAudio()) {
 
@@ -276,14 +261,6 @@ public class ModeListAdapter extends BaseAdapter {
                 }
             });
 
-
-            /*if (curr.isFirstTime() && curr.isActive()) {
-                changeSwitchState(curr.isActive(), curr);
-                curr.setFirstTime(false);
-            }*/
-
-
-
             newView.setTag(holder);
 
         } else {
@@ -335,8 +312,6 @@ public class ModeListAdapter extends BaseAdapter {
         TextView connection;
         Switch onoff;
         ImageView delete;
-        TextView activation;
-
     }
 
 
